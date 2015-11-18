@@ -1,0 +1,13 @@
+---
+locked_files:
+- bin/
+- bin/*
+- env/
+- env/*
+- hooks/
+- hooks/*
+- metadata/
+- metadata/*
+- tmp/
+processed_templates:
+- '**/*.erb'

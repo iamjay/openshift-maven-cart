@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Adapted from https://github.com/kr/heroku-buildpack-go
+#
+# usage: bin/compile <build-dir> <cache-dir>
+
+set -eo pipefail
+
+mkdir -p "$1" "$2"
+build=$(cd "$1/" && pwd)
+cache=$(cd "$2/" && pwd)
+
+url=http://www.us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+
+if ! test -d $cache/apache-maven-3.3.9 ; then
+    (
+        cd $cache
+        curl -sO $url
+        tar xzf apache-maven-3.3.9-bin.tar.gz
+    )
+fi
+
+PATH=$cache/apache-maven-3.3.9/bin:$PATH
+
+run_hook build

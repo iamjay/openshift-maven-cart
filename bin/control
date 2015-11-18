@@ -1,0 +1,62 @@
+#!/bin/bash
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+function run_hook() {
+  local path="$OPENSHIFT_REPO_DIR/.openshift/action_hooks/$1"
+  if [ -f "$path" -a -x "$path" ]
+  then
+    "$path"
+  else
+    return 0
+  fi
+}
+
+function start() {
+    echo "Starting maven cartridge"
+    run_hook start
+}
+
+function stop() {
+    echo "Stopping maven cartridge"
+    run_hook stop
+}
+
+function restart() {
+    stop
+    start
+}
+
+function status() {
+   if output=$(curl http://$OPENSHIFT_MAVEN_IP:$OPENSHIFT_MAVEN_PORT 2>&1 )
+   then
+      client_result "Application is running"
+   else
+      client_result "Application is either stopped or inaccessible"
+   fi
+}
+
+function reload() {
+    client_result "Reloading maven cart"
+    restart
+}
+
+function tidy() {
+  client_message "Emptying diy logs in dir: $OPENSHIFT_MAVEN_LOG_DIR"
+  shopt -s dotglob
+  rm -rf $OPENSHIFT_MAVEN_LOG_DIR/*
+}
+
+function build() {
+  ${OPENSHIFT_MAVEN_DIR}/bin/compile ${OPENSHIFT_REPO_DIR} ${OPENSHIFT_MAVEN_DIR}/cache
+}
+
+case "$1" in
+  start)     start ;;
+  stop)      stop ;;
+  restart)   restart ;;
+  status)    status ;;
+  reload)    reload ;;
+  tidy)      tidy ;;
+  build)     build ;;
+  *)         exit 0
+esac
