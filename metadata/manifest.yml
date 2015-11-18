@@ -8,6 +8,7 @@ License: ASL 2.0
 License-Url: http://www.apache.org/licenses/LICENSE-2.0.txt
 Cartridge-Version: 0.0.1
 Cartridge-Vendor: iamjay
+Compatible-Version: ['0.0.1']
 Categories:
 - web_framework
 - experimental
